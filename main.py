@@ -32,7 +32,7 @@ parser.add_argument('--trial', type=str, default='1', help='trial id')
 parser.add_argument('--img_dim', default=32, type=int)
 
 parser.add_argument('--dataset', default='imagenet', choices=['inat', 'imagenet'])
-parser.add_argument('--dataset', default='/DATACENTER/raid5/zjg/imagenet', metavar='DIR')
+parser.add_argument('--data', default='/DATACENTER/raid5/zjg/imagenet', metavar='DIR')
 parser.add_argument('--temp', default=0.07, type=float, help='scalar temperature for contrastive learning')
 
 parser.add_argument('--arch', default='resnet18', help='model name is used for training')
