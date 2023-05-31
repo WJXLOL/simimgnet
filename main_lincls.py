@@ -30,7 +30,7 @@ model_names = sorted(name for name in models.__dict__
     and callable(models.__dict__[name]))
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
-parser.add_argument('data', metavar='DIR',
+parser.add_argument('dataset', metavar='DIR',
                     help='path to dataset')
 parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet50',
                     choices=model_names,
@@ -40,7 +40,7 @@ parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet50',
 parser.add_argument('--num_cls', default=10, type=int, metavar='N',
                     help='number of classes in dataset (output dimention of models)')
 parser.add_argument('-j', '--workers', default=8, type=int, metavar='N',
-                    help='number of data loading workers (default: 32)')
+                    help='number of dataset loading workers (default: 32)')
 parser.add_argument('--epochs', default=100, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--start_epoch', default=0, type=int, metavar='N',
@@ -81,7 +81,7 @@ parser.add_argument('--multiprocessing-distributed', action='store_true',
                     help='Use multi-processing distributed training to launch '
                          'N processes per node, which has N GPUs. This is the '
                          'fastest way to use PyTorch for either single node or '
-                         'multi node data parallel training')
+                         'multi node dataset parallel training')
 
 parser.add_argument('--pretrained', default='', type=str, help='path to pretrained checkpoint')
 
@@ -115,7 +115,7 @@ def main():
 
     if args.gpu is not None:
         warnings.warn('You have chosen a specific GPU. This will completely '
-                      'disable data parallelism.')
+                      'disable dataset parallelism.')
 
     if args.dist_url == "env://" and args.world_size == -1:
         args.world_size = int(os.environ["WORLD_SIZE"])
@@ -348,7 +348,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
 
     end = time.time()
     for i, (images, target) in enumerate(train_loader):
-        # measure data loading time
+        # measure dataset loading time
         data_time.update(time.time() - end)
 
         if args.gpu is not None:
