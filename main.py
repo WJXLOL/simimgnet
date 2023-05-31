@@ -34,7 +34,6 @@ parser.add_argument('--img_dim', default=32, type=int)
 parser.add_argument('--dataset', default='imagenet', choices=['inat', 'imagenet'])
 parser.add_argument('--data', default='/DATACENTER/raid5/zjg/imagenet', metavar='DIR')
 parser.add_argument('--temp', default=0.07, type=float, help='scalar temperature for contrastive learning')
-parser.add_argument('--reload', default=False, type=bool, help='load supervised model')
 
 parser.add_argument('--arch', default='resnet18', help='model name is used for training')
 parser.add_argument('--feat_dim', default=2048, type=int, help='feature dimension')
@@ -83,20 +82,20 @@ def main():
         else f'dataset/iNaturalist18/iNaturalist18_val.txt'
 
     val_set = INaturalist(
-        root=args.data_root,
+        root=args.data,
         txt=txt_val,
         transform=TwoCropsTransform(train_transforms), train=False,
     ) if args.dataset == 'inat' else ImageNetLT(
-        root=args.data_root,
+        root=args.data,
         txt=txt_val,
         transform=TwoCropsTransform(train_transforms), train=False)
 
     train_set = INaturalist(
-        root=args.data_root,
+        root=args.data,
         txt=txt_train,
         transform=TwoCropsTransform(train_transforms)
     ) if args.dataset == 'inat' else ImageNetLT(
-        root=args.data_root,
+        root=args.data,
         txt=txt_train,
         transform=TwoCropsTransform(train_transforms))
 
