@@ -4,6 +4,8 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision import datasets
 from torch import nn
+from dataset.inat import INaturalist
+from dataset.imagenet import ImageNetLT
 
 
 class KNNValidation(object):
@@ -18,29 +20,37 @@ class KNNValidation(object):
             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
         ])
 
-        train_dataset = datasets.CIFAR10(root=args.data_root,
-                                         train=True,
-                                         download=True,
-                                         transform=base_transforms)
+        txt_train = f'dataset/ImageNet_LT/ImageNet_LT_train.txt' if args.dataset == 'imagenet' \
+            else f'dataset/iNaturalist18/iNaturalist18_train.txt'
+        txt_val = f'dataset/ImageNet_LT/ImageNet_LT_val.txt' if args.dataset == 'imagenet' \
+            else f'dataset/iNaturalist18/iNaturalist18_val.txt'
 
-        self.train_dataloader = DataLoader(train_dataset,
-                                           batch_size=args.batch_size,
-                                           shuffle=False,
-                                           num_workers=args.num_workers,
-                                           pin_memory=True,
-                                           drop_last=True)
+        train_set = INaturalist(
+            root=args.data,
+            txt=txt_train,
+            transform=base_transforms
+        ) if args.dataset == 'inat' else ImageNetLT(
+            root=args.data,
+            txt=txt_train,
+            transform=base_transforms)
 
-        val_dataset = datasets.CIFAR10(root=args.data_root,
-                                       train=False,
-                                       download=True,
-                                       transform=base_transforms)
+        self.train_dataloader = DataLoader(
+            dataset=train_set, batch_size=args.batch_size, shuffle=True,
+            num_workers=args.num_workers, pin_memory=True, drop_last=True)
 
-        self.val_dataloader = DataLoader(val_dataset,
-                                         batch_size=args.batch_size,
-                                         shuffle=False,
-                                         num_workers=args.num_workers,
-                                         pin_memory=True,
-                                         drop_last=True)
+        val_set = INaturalist(
+            root=args.data,
+            txt=txt_train,
+            train=False,
+            transform=base_transforms
+        ) if args.dataset == 'inat' else ImageNetLT(
+            root=args.data,
+            txt=txt_train,
+            train=False,
+            transform=base_transforms)
+
+        self.val_dataloader = DataLoader(dataset=val_set, batch_size=args.batch_size, shuffle=False,
+                                         num_workers=args.num_workers, pin_memory=True, drop_last=True)
 
     def _topk_retrieval(self):
         """Extract features from validation split and search on train split features."""

@@ -81,15 +81,6 @@ def main():
     txt_val = f'dataset/ImageNet_LT/ImageNet_LT_val.txt' if args.dataset == 'imagenet' \
         else f'dataset/iNaturalist18/iNaturalist18_val.txt'
 
-    val_set = INaturalist(
-        root=args.data,
-        txt=txt_val,
-        transform=TwoCropsTransform(train_transforms), train=False,
-    ) if args.dataset == 'inat' else ImageNetLT(
-        root=args.data,
-        txt=txt_val,
-        transform=TwoCropsTransform(train_transforms), train=False)
-
     train_set = INaturalist(
         root=args.data,
         txt=txt_train,
@@ -99,6 +90,15 @@ def main():
         txt=txt_train,
         transform=TwoCropsTransform(train_transforms))
 
+    val_set = INaturalist(
+        root=args.data,
+        txt=txt_val,
+        transform=TwoCropsTransform(train_transforms), train=False,
+    ) if args.dataset == 'inat' else ImageNetLT(
+        root=args.data,
+        txt=txt_val,
+        transform=TwoCropsTransform(train_transforms), train=False)
+
     train_loader = DataLoader(
         dataset=train_set, batch_size=args.batch_size, shuffle=True,
         num_workers=args.num_workers, pin_memory=True, drop_last=True)
@@ -106,7 +106,6 @@ def main():
     val_loader = DataLoader(
         dataset=val_set, batch_size=args.batch_size, shuffle=False,
         num_workers=args.num_workers, pin_memory=True, drop_last=True)
-
 
     model = SimSiam(args)
 
